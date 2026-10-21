@@ -288,7 +288,7 @@ const DEC=[
   body:()=>`<p>The night shift logged grinding on granulator 4 but raised no ticket. A 4-hour inspection tonight (22:00–02:00) costs B-2411 four hours and does not move its ship date. If it breaks during a shift, repair takes about 2 days.</p>`},
  {id:'tk1',at:TK1_ASK,title:'Take Coating pan 1 offline for 4 hours?',yes:'Approve repair',no:'Keep it running',
   body:()=>`<p>Its spray pump is at 41% speed, so every coating run takes 2.5× longer. The spare pump is on its way from stores. Fitting it takes 4 hours tonight, after line clearance; no batch loses a day.</p>`},
- {id:'t07',at:48.40,title:'Approve a night shift for B-2407?',yes:'Approve',no:'Reject',
+ {id:'t07',at:48.40,title:'Approve an extra QC shift for B-2407?',yes:'Approve',no:'Reject',
   body:()=>`<p>₹6 L overtime for an extra QC analyst shift. B-2407 then ships <b>20 Nov</b> instead of 23 Nov, and the penalty drops from <b>₹1 Cr to ₹25 L</b>.</p>`},
  {id:'mail',at:48.55,title:'Send this update to the distributor?',yes:'Send',no:'Hold for now',
   body:()=>{const d=DS.t07==='approve'?'20 Nov':'21 Nov',w=DS.t07==='approve'?'one day':'two days';return`<p>The agent drafted the customer notice. Nothing goes out without your OK.</p><blockquote>Dear Ms Rao, batch B-2407 of Levetiracetam 500 mg was delayed by an equipment fault in film coating. We have fixed it and re-planned QC release. The batch will now ship on <b>${d}</b>, ${w} after the agreed date. We will confirm the release date by Friday.</blockquote>`}},
@@ -875,7 +875,7 @@ function cmpTable(){const s=summary();return`<table class="cmp"><tr><th></th><th
 function storyData(t){
   const u=UNITS.find(x=>x.id==='B-2407'),eb=agentOn()?'With AI agent':'The plant today, no agent';
   const p=pending(t);
-  if(p){const n=DEC.indexOf(p)+1;return{eb,tag:`Decision ${n} of 4`,cls:'agent',h:p.title,p:'The agent has prepared this. Answer in the notification, bottom right.',nums:''}}
+  if(p){const n=tourI>=0?DEC.filter(d=>!PRESET.includes(d.id)).indexOf(p)+1:DEC.indexOf(p)+1;return{eb,tag:(tourI>=0?`Decision ${n} of 2`:`Decision ${n} of 4`),cls:'agent',h:p.title,p:'The agent has prepared this. Answer in the notification, bottom right.',nums:''}}
   if(t>=H_END-1)return{eb,cls:'ok',h:agentOn()?'The 17 days are done.':'The 17 days are done.',p:agentOn()?'Same plant, same problems. Here is what your decisions changed.':'Switch to "With AI agent" to replay the same days.',nums:cmpTable()};
   if(t<EV_SUPPLIER)return{eb,cls:'ok',h:`${UNITS.length} batches in the plant, all on schedule.`,p:'Press play to run the plant day by day. Click any room, machine or batch to see what it does.',nums:''};
   if(!agentOn()){
@@ -954,7 +954,7 @@ function renderChrome(t){
   const risk=UNITS.filter(u=>{const s=status(u,t);return s.cls==='risk'||s.stuck}).length;$('riskBadge').hidden=!risk;$('riskBadge').textContent=risk;
   $('agentTab').hidden=!agentOn();const n=AUTO.filter(a=>t>=a.at).length+DEC.filter(d=>t>=d.at).length;$('agentBadge').hidden=!n;$('agentBadge').textContent=n;
   const p=pending(t);$('toast').hidden=!p;$('autos').classList.toggle('up',!!p);
-  if(p&&lastToast!==p.id+JSON.stringify(DS)){lastToast=p.id+JSON.stringify(DS);$('toastN').textContent=`Decision ${DEC.indexOf(p)+1} of 4`;$('toastT').textContent=p.title;$('toastB').innerHTML=p.body();$('approve').textContent=p.yes;$('reject').textContent=p.no}
+  if(p&&lastToast!==p.id+JSON.stringify(DS)){lastToast=p.id+JSON.stringify(DS);$('toastN').textContent=tourI>=0?`Decision ${DEC.filter(d=>!PRESET.includes(d.id)).indexOf(p)+1} of 2`:`Decision ${DEC.indexOf(p)+1} of 4`;$('toastT').textContent=p.title;$('toastB').innerHTML=p.body();$('approve').textContent=p.yes;$('reject').textContent=p.no}
 }
 let lastPanels=0;
 function refresh(force){const now=performance.now();if(!force&&now-lastPanels<150)return;lastPanels=now;renderStory(T);renderCard(T);renderDrawer(T);renderChrome(T)}
