@@ -4,7 +4,7 @@
 
 A 3D digital twin of an oral solid dose (tablet) plant, with an AI agent that finds a delayed batch, traces the cause, fixes what it is allowed to, and asks a person before anything costly.
 
-Proof of concept for Straive's Innovation Team, adapted from the [transformer plant twin](https://github.com/eshwarpotturi/transformer-plant-twin). **All data is synthetic.** Figures are typical industry values, not any client's.
+Proof of concept for the Innovation Team, adapted from the [transformer plant twin](https://github.com/eshwarpotturi/transformer-plant-twin). **All data is synthetic.** Figures are typical industry values, not any client's.
 
 ## Guided demo
 
